@@ -31,6 +31,27 @@ struct DashboardView: View {
                         DashboardRow(title: "Overdue", value: "\(appState.totalOverdue)", color: .red, icon: "exclamationmark.circle.fill")
                     }
                 }
+
+                if !overdueTasks.isEmpty {
+                    Section {
+                        Button(action: {
+                            appState.checkAndNotifyOverdueTasks(userPhone: appState.userPhone)
+                        }) {
+                            HStack {
+                                Image(systemName: "bell.fill")
+                                    .foregroundColor(.white)
+                                Text("Send SMS Alerts for \(overdueTasks.count) Overdue Tasks")
+                                    .foregroundColor(.white)
+                                    .font(.caption)
+                                    .bold()
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.red)
+                            .cornerRadius(12)
+                        }
+                    }
+                }
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Dashboard")
@@ -91,9 +112,6 @@ struct TaskListView: View {
         .navigationTitle(title)
     }
 }
-
-   
-
 
 struct StatCard: View {
     var title: String

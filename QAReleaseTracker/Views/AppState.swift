@@ -2,6 +2,7 @@ import SwiftUI
 import Combine
 
 class AppState: ObservableObject {
+    @Published var userPhone: String = ""
     @Published var tasks: [Task] = []
     @Published var releases: [Release] = []
     @Published var isLoggedIn: Bool = false
@@ -131,5 +132,36 @@ class AppState: ObservableObject {
         URLSession.shared.dataTask(with: request) { _, _, _ in
             DispatchQueue.main.async { self.fetchReleases() }
         }.resume()
+    }
+    // MARK: - Twilio SMS
+    func sendSMS(to phoneNumber: String, message: String) {
+        let functionURL = "https://zskjzutxeafxluarmmkx.supabase.co/functions/v1/send-sms"
+        guard let url = URL(string: functionURL) else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        request.addValue(anonKey, forHTTPHeaderField: "apikey")
+        
+        let body = ["to": phoneNumber, "message": message]
+        request.httpBody = try? JSONEncoder().encode(body)
+        
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            if let data = data {
+                print("SMS response: \(String(data: data, encoding: .utf8) ?? "")")
+            }
+            if let error = error {
+                print("SMS error: \(error)")
+            }
+        }.resume()
+    }
+
+    func checkAndNotifyOverdueTasks(userPhone: String) {
+        let overdue = overdueTasks
+        for task in overdue {
+            let message = "QA Tracker Alert: Task '\(task.title)' is overdue. Priority: \(task.priority). Please follow up."
+            sendSMS(to: userPhone, message: message)
+        }
     }
 }

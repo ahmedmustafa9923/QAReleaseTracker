@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AuthView: View {
     @EnvironmentObject var appState: AppState
+    @State private var phoneNumber = ""
     @State private var email = ""
     @State private var password = ""
     @State private var isSignUp = false
@@ -44,6 +45,9 @@ struct AuthView: View {
 
                     SecureField("Password", text: $password)
                         .textFieldStyle(.roundedBorder)
+                    TextField("Phone Number (+1XXXXXXXXXX)", text: $phoneNumber)
+                        .textFieldStyle(.roundedBorder)
+                        .keyboardType(.phonePad)
 
                     if !errorMessage.isEmpty {
                         Text(errorMessage)
@@ -114,6 +118,7 @@ struct AuthView: View {
                     appState.accessToken = token
                     appState.userId = userId
                     appState.isLoggedIn = true
+                    appState.userPhone = self.phoneNumber
                 } else if let msg = json["msg"] as? String {
                     errorMessage = msg
                 } else if let error = json["error_description"] as? String {

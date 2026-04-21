@@ -1,16 +1,17 @@
 import SwiftUI
 
-struct Release: Identifiable {
-    var id = UUID()
+struct Release: Identifiable, Codable {
+    var id: UUID = UUID()
+    var user_id: UUID? = nil
     var title: String
-    var date: Date
-    var status: String
-    var owner: String
     var notes: String
+    var owner: String
+    var status: String
+    var deployment_date: Date
 }
 
 struct ReleaseCalendarView: View {
-    @State private var releases: [Release] = []
+    @EnvironmentObject var appState: AppState
     @State private var showingAddRelease = false
     @State private var newTitle = ""
     @State private var newOwner = ""
@@ -34,7 +35,7 @@ struct ReleaseCalendarView: View {
     var groupedByMonth: [String: [Release]] {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM yyyy"
-        return Dictionary(grouping: releases) { formatter.string(from: $0.date) }
+        return Dictionary(grouping: appState.releases) { formatter.string(from: $0.deployment_date) }
     }
 
     var sortedMonths: [String] {
@@ -100,12 +101,12 @@ struct ReleaseCalendarView: View {
                                 if newTitle.trimmingCharacters(in: .whitespaces).isEmpty {
                                     showingError = true
                                 } else {
-                                    releases.append(Release(
+                                    appState.releases.append(Release(
                                         title: newTitle,
-                                        date: newDate,
-                                        status: newStatus,
+                                        notes: newNotes,
                                         owner: newOwner,
-                                        notes: newNotes
+                                        status: newStatus,
+                                        deployment_date: newDate
                                     ))
                                     newTitle = ""
                                     newOwner = ""
@@ -147,7 +148,7 @@ struct ReleaseRowView: View {
             HStack {
                 Image(systemName: "calendar")
                     .foregroundColor(.blue)
-                Text(release.date, style: .date)
+                Text(release.deployment_date, style: .date)
                     .font(.caption)
                     .foregroundColor(.blue)
                 Spacer()

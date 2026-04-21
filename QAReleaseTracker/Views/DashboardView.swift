@@ -1,42 +1,64 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @State private var tasks: [Task] = []
+    @EnvironmentObject var appState: AppState
 
-    var pendingTasks: [Task] { tasks.filter { $0.status == "Pending" } }
-    var completedTasks: [Task] { tasks.filter { $0.status == "Completed" } }
-    var overdueTasks: [Task] { tasks.filter { $0.dueDate < Date() && $0.status != "Completed" } }
+    var pendingTasks: [Task] { appState.tasks.filter { $0.status == "Pending" } }
+    var completedTasks: [Task] { appState.tasks.filter { $0.status == "Completed" } }
+    var overdueTasks: [Task] { appState.tasks.filter { $0.due_date < Date() && $0.status != "Completed" } }
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: 20) {
+            List {
+                Section {
                     Text("Welcome, Ahmed")
                         .font(.title)
                         .bold()
-
-                    HStack(spacing: 15) {
-                        NavigationLink(destination: TaskListView(title: "All Tasks", tasks: tasks)) {
-                            StatCard(title: "Total Tasks", value: "\(tasks.count)", color: .blue)
-                        }
-                        NavigationLink(destination: TaskListView(title: "Completed", tasks: completedTasks)) {
-                            StatCard(title: "Completed", value: "\(completedTasks.count)", color: .green)
-                        }
-                    }
-                    HStack(spacing: 15) {
-                        NavigationLink(destination: TaskListView(title: "Pending", tasks: pendingTasks)) {
-                            StatCard(title: "Pending", value: "\(pendingTasks.count)", color: .orange)
-                        }
-                        NavigationLink(destination: TaskListView(title: "Overdue", tasks: overdueTasks)) {
-                            StatCard(title: "Overdue", value: "\(overdueTasks.count)", color: .red)
-                        }
-                    }
-                    Spacer()
+                        .padding(.vertical, 8)
                 }
-                .padding()
+
+                Section("Overview") {
+                    NavigationLink(destination: TaskListView(title: "All Tasks", tasks: appState.tasks)) {
+                        DashboardRow(title: "Total Tasks", value: "\(appState.tasks.count)", color: .blue, icon: "checklist")
+                    }
+                    NavigationLink(destination: TaskListView(title: "Completed", tasks: completedTasks)) {
+                        DashboardRow(title: "Completed", value: "\(completedTasks.count)", color: .green, icon: "checkmark.circle.fill")
+                    }
+                    NavigationLink(destination: TaskListView(title: "Pending", tasks: pendingTasks)) {
+                        DashboardRow(title: "Pending", value: "\(pendingTasks.count)", color: .orange, icon: "clock.fill")
+                    }
+                    NavigationLink(destination: TaskListView(title: "Overdue", tasks: overdueTasks)) {
+                        DashboardRow(title: "Overdue", value: "\(appState.totalOverdue)", color: .red, icon: "exclamationmark.circle.fill")
+                    }
+                }
             }
+            .listStyle(.insetGrouped)
             .navigationTitle("Dashboard")
         }
+    }
+}
+
+struct DashboardRow: View {
+    var title: String
+    var value: String
+    var color: Color
+    var icon: String
+
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .foregroundColor(color)
+                .font(.title2)
+                .frame(width: 36)
+            Text(title)
+                .font(.body)
+            Spacer()
+            Text(value)
+                .font(.title2)
+                .bold()
+                .foregroundColor(color)
+        }
+        .padding(.vertical, 6)
     }
 }
 
@@ -46,7 +68,7 @@ struct TaskListView: View {
 
     var body: some View {
         List {
-            ForEach(tasks.sorted { $0.priority > $1.priority }) { task in
+            ForEach(tasks) { task in
                 VStack(alignment: .leading, spacing: 5) {
                     Text(task.title)
                         .font(.headline)
@@ -59,7 +81,7 @@ struct TaskListView: View {
                             .font(.caption)
                             .foregroundColor(.orange)
                     }
-                    Text(task.dueDate, style: .date)
+                    Text(task.due_date, style: .date)
                         .font(.caption)
                         .foregroundColor(.red)
                 }
@@ -69,6 +91,9 @@ struct TaskListView: View {
         .navigationTitle(title)
     }
 }
+
+   
+
 
 struct StatCard: View {
     var title: String

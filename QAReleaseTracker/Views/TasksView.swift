@@ -1,10 +1,8 @@
 import SwiftUI
 
 struct TasksView: View {
-    @State private var tasks: [Task] = []
+    @EnvironmentObject var appState: AppState
     @State private var showingAddTask = false
-    @State private var showingEditTask = false
-    @State private var selectedTask: Task?
     @State private var showingError = false
     @State private var newTitle = ""
     @State private var newNotes = ""
@@ -26,42 +24,26 @@ struct TasksView: View {
                     Text("Task title cannot be empty.")
                 }
                 .sheet(isPresented: $showingAddTask) { addTaskSheet }
-                .sheet(isPresented: $showingEditTask) { editTaskSheet }
         }
     }
 
     var taskList: some View {
         List {
-            ForEach(tasks) { task in
-                NavigationLink(destination: {
-                    if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-                        TaskFormView(
-                            title: "Edit Task",
-                            taskTitle: $tasks[index].title,
-                            notes: $tasks[index].notes,
-                            owner: $tasks[index].owner,
-                            dueDate: $tasks[index].dueDate,
-                            priority: $tasks[index].priority,
-                            emailSent: $tasks[index].emailSent,
-                            textSent: $tasks[index].textSent,
-                            approvalStatus: $tasks[index].approvalStatus,
-                            onSave: {}
-                        )
-                    }
-                }) {
+            ForEach(appState.tasks) { task in
+                NavigationLink(destination: EditTaskView(task: task)) {
                     TaskRowView(task: task)
                 }
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
-                        tasks.removeAll { $0.id == task.id }
+                        appState.tasks.removeAll { $0.id == task.id }
                     } label: {
                         Label("Delete", systemImage: "trash")
                     }
                 }
                 .swipeActions(edge: .leading) {
                     Button {
-                        if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-                            tasks[index].status = "Archived"
+                        if let index = appState.tasks.firstIndex(where: { $0.id == task.id }) {
+                            appState.tasks[index].status = "Archived"
                         }
                     } label: {
                         Label("Archive", systemImage: "archivebox")
@@ -71,10 +53,6 @@ struct TasksView: View {
             }
         }
     }
-                    
-            
-        
-    
 
     var toolbarButtons: some ToolbarContent {
         ToolbarItem(placement: .navigationBarTrailing) {
@@ -99,17 +77,17 @@ struct TasksView: View {
                 if newTitle.trimmingCharacters(in: .whitespaces).isEmpty {
                     showingError = true
                 } else {
-                    tasks.append(Task(
+                    appState.tasks.append(Task(
                         title: newTitle,
-                        dueDate: newDueDate,
-                        status: "Pending",
-                        priority: newPriority,
                         notes: newNotes,
                         owner: newOwner,
-                        approvalStatus: approvalStatus,
-                        emailSent: emailSent,
-                        textSent: textSent
-                    ))
+                        status: "Pending",
+                        priority: newPriority,
+                        due_date: newDueDate,
+                        approval_status: approvalStatus,
+                        email_sent: emailSent,
+                        text_sent: textSent
+                   ))
                     showingAddTask = false
                     newTitle = ""
                     newNotes = ""
@@ -118,29 +96,28 @@ struct TasksView: View {
             }
         )
     }
+}
 
-    var editTaskSheet: some View {
-        Group {
-            if let task = selectedTask,
-               let index = tasks.firstIndex(where: { $0.id == task.id }) {
-                TaskFormView(
-                    title: "Edit Task",
-                    taskTitle: $tasks[index].title,
-                    notes: $tasks[index].notes,
-                    owner: $tasks[index].owner,
-                    dueDate: $tasks[index].dueDate,
-                    priority: $tasks[index].priority,
-                    emailSent: $tasks[index].emailSent,
-                    textSent: $tasks[index].textSent,
-                    approvalStatus: $tasks[index].approvalStatus,
-                    onSave: { showingEditTask = false }
-                )
-            }
+// Separate Edit View — fixes the Binding issue completely
+struct EditTaskView: View {
+    @EnvironmentObject var appState: AppState
+    var task: Task
+
+    var body: some View {
+        if let index = appState.tasks.firstIndex(where: { $0.id == task.id }) {
+            TaskFormView(
+                title: "Edit Task",
+                taskTitle: $appState.tasks[index].title,
+                notes: $appState.tasks[index].notes,
+                owner: $appState.tasks[index].owner,
+                dueDate: $appState.tasks[index].due_date,
+                priority: $appState.tasks[index].priority,
+                emailSent: $appState.tasks[index].email_sent,
+                textSent: $appState.tasks[index].text_sent,
+                approvalStatus: $appState.tasks[index].approval_status,
+                onSave: {}
+            )
         }
-    }
-
-    func deleteTask(at offsets: IndexSet) {
-        tasks.remove(atOffsets: offsets)
     }
 }
 
@@ -155,10 +132,10 @@ struct TaskRowView: View {
                 Text("Priority: \(task.priority)").font(.caption).foregroundColor(.orange)
             }
             HStack {
-                Text(task.dueDate, style: .date).font(.caption).foregroundColor(.red)
+                Text(task.due_date, style: .date).font(.caption).foregroundColor(.red)
                 Spacer()
-                if task.emailSent { Image(systemName: "envelope.fill").foregroundColor(.blue).font(.caption) }
-                if task.textSent { Image(systemName: "message.fill").foregroundColor(.green).font(.caption) }
+                if task.email_sent { Image(systemName: "envelope.fill").foregroundColor(.blue).font(.caption) }
+                if task.text_sent { Image(systemName: "message.fill").foregroundColor(.green).font(.caption) }
             }
         }
         .padding(.vertical, 5)

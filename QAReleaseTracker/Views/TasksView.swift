@@ -35,7 +35,7 @@ struct TasksView: View {
                 }
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
-                        appState.tasks.removeAll { $0.id == task.id }
+                        appState.deleteTask(id: task.id)
                     } label: {
                         Label("Delete", systemImage: "trash")
                     }
@@ -77,7 +77,8 @@ struct TasksView: View {
                 if newTitle.trimmingCharacters(in: .whitespaces).isEmpty {
                     showingError = true
                 } else {
-                    appState.tasks.append(Task(
+                    appState.insertTask(Task(
+                        user_id: UUID(uuidString: appState.userId),
                         title: newTitle,
                         notes: newNotes,
                         owner: newOwner,
@@ -87,7 +88,7 @@ struct TasksView: View {
                         approval_status: approvalStatus,
                         email_sent: emailSent,
                         text_sent: textSent
-                   ))
+                    ))
                     showingAddTask = false
                     newTitle = ""
                     newNotes = ""

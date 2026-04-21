@@ -101,7 +101,7 @@ struct ReleaseCalendarView: View {
                                 if newTitle.trimmingCharacters(in: .whitespaces).isEmpty {
                                     showingError = true
                                 } else {
-                                    appState.releases.append(Release(
+                                    appState.insertRelease(Release(
                                         title: newTitle,
                                         notes: newNotes,
                                         owner: newOwner,

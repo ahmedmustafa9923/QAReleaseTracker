@@ -1,7 +1,11 @@
 import SwiftUI
 import Combine
 
+
 class AppState: ObservableObject {
+    @Published var isLoggedIn: Bool = false
+    @Published var accessToken: String = ""
+    @Published var userId: String = ""
     @Published var tasks: [Task] = [] {
         didSet { saveTasks() }
     }

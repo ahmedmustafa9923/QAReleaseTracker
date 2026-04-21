@@ -3,11 +3,16 @@ import SwiftUI
 @main
 struct QAReleaseTrackerApp: App {
     @StateObject var appState = AppState()
-    
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(appState)
+            if appState.isLoggedIn {
+                ContentView()
+                    .environmentObject(appState)
+            } else {
+                AuthView()
+                    .environmentObject(appState)
+            }
         }
     }
 }

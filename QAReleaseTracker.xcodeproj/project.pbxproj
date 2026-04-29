@@ -7,11 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		681B06762F97D98E005E06B4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681B066E2F97D98E005E06B4 /* ContentView.swift */; };
+		681B06772F97D98E005E06B4 /* QAReleaseTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681B066F2F97D98E005E06B4 /* QAReleaseTrackerApp.swift */; };
 		685EA3822F97D67600F7BFA7 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 685EA3812F97D67600F7BFA7 /* Algorithms */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		68E1EE1E2F96E93B00B3A8A3 /* QAReleaseTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QAReleaseTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		681B066E2F97D98E005E06B4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		681B066F2F97D98E005E06B4 /* QAReleaseTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QAReleaseTrackerApp.swift; sourceTree = "<group>"; };
+		68E1EE1E2F96E93B00B3A8A3 /* QAReleaseTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = QAReleaseTracker.app; path = /Users/ahmedmustafa/Desktop/Client/CodeRenderingStudio/QAReleaseTracker/build/Debug/QAReleaseTracker.app; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -37,17 +41,10 @@
 		68E1EE152F96E93B00B3A8A3 = {
 			isa = PBXGroup;
 			children = (
+				681B066E2F97D98E005E06B4 /* ContentView.swift */,
 				68E1EE202F96E93B00B3A8A3 /* QAReleaseTracker */,
-				68E1EE1F2F96E93B00B3A8A3 /* Products */,
+				681B066F2F97D98E005E06B4 /* QAReleaseTrackerApp.swift */,
 			);
-			sourceTree = "<group>";
-		};
-		68E1EE1F2F96E93B00B3A8A3 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				68E1EE1E2F96E93B00B3A8A3 /* QAReleaseTracker.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -104,7 +101,7 @@
 				685EA3802F97D67600F7BFA7 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 68E1EE1F2F96E93B00B3A8A3 /* Products */;
+			productRefGroup = 68E1EE152F96E93B00B3A8A3;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -128,6 +125,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				681B06762F97D98E005E06B4 /* ContentView.swift in Sources */,
+				681B06772F97D98E005E06B4 /* QAReleaseTrackerApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

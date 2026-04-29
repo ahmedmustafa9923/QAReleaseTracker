@@ -1,8 +1,0 @@
-Button {
-    selectedTask = task
-    DispatchQueue.main.async {
-        showingEditTask = true
-    }
-} label: {
-    Label("Edit", systemImage: "pencil")
-}

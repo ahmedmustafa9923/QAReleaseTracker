@@ -7,6 +7,7 @@ struct TasksView: View {
     @State private var newTitle = ""
     @State private var newNotes = ""
     @State private var newOwner = ""
+    @State private var newOwnerPhone = ""
     @State private var newDueDate = Date()
     @State private var newPriority = "Medium"
     @State private var emailSent = false
@@ -68,6 +69,7 @@ struct TasksView: View {
             taskTitle: $newTitle,
             notes: $newNotes,
             owner: $newOwner,
+            ownerPhone: $newOwnerPhone,
             dueDate: $newDueDate,
             priority: $newPriority,
             emailSent: $emailSent,
@@ -82,6 +84,7 @@ struct TasksView: View {
                         title: newTitle,
                         notes: newNotes,
                         owner: newOwner,
+                        owner_phone: newOwnerPhone,
                         status: "Pending",
                         priority: newPriority,
                         due_date: newDueDate,
@@ -93,13 +96,13 @@ struct TasksView: View {
                     newTitle = ""
                     newNotes = ""
                     newOwner = ""
+                    newOwnerPhone = ""
                 }
             }
         )
     }
 }
 
-// Separate Edit View — fixes the Binding issue completely
 struct EditTaskView: View {
     @EnvironmentObject var appState: AppState
     var task: Task
@@ -111,6 +114,7 @@ struct EditTaskView: View {
                 taskTitle: $appState.tasks[index].title,
                 notes: $appState.tasks[index].notes,
                 owner: $appState.tasks[index].owner,
+                ownerPhone: $appState.tasks[index].owner_phone,
                 dueDate: $appState.tasks[index].due_date,
                 priority: $appState.tasks[index].priority,
                 emailSent: $appState.tasks[index].email_sent,
@@ -148,6 +152,7 @@ struct TaskFormView: View {
     @Binding var taskTitle: String
     @Binding var notes: String
     @Binding var owner: String
+    @Binding var ownerPhone: String
     @Binding var dueDate: Date
     @Binding var priority: String
     @Binding var emailSent: Bool
@@ -164,6 +169,8 @@ struct TaskFormView: View {
                 Section("Task Details") {
                     TextField("Task Title", text: $taskTitle)
                     TextField("Owner", text: $owner)
+                    TextField("Owner Phone (+1XXXXXXXXXX)", text: $ownerPhone)
+                        .keyboardType(.phonePad)
                     TextField("Notes", text: $notes)
                     DatePicker("Due Date", selection: $dueDate, displayedComponents: .date)
                 }

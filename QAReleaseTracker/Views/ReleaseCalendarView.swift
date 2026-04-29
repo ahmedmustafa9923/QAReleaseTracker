@@ -58,6 +58,14 @@ struct ReleaseCalendarView: View {
                     ) {
                         ForEach(groupedByMonth[month] ?? []) { release in
                             ReleaseRowView(release: release, statusColor: statusColor(release.status))
+                                .swipeActions(edge: .trailing) {
+                                    Button(role: .destructive) {
+                                        appState.releases.removeAll { $0.id == release.id }
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                }
+                        }
                         }
                     }
                 }
@@ -123,7 +131,7 @@ struct ReleaseCalendarView: View {
             }
         }
     }
-}
+
 
 struct ReleaseRowView: View {
     var release: Release
